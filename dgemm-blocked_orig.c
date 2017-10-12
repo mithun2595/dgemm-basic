@@ -9,8 +9,8 @@
 const char* dgemm_desc = "Simple blocked dgemm.";
 
 #if !defined(BLOCK_SIZE)
-#define BLOCK_2_SIZE 256
-#define BLOCK_1_SIZE 32
+#define BLOCK_SIZE 37
+// #define BLOCK_SIZE 719
 #endif
 
 #define min(a,b) (((a)<(b))?(a):(b))
@@ -37,42 +37,33 @@ static void do_block (int lda, int M, int N, int K, double* A, double* B, double
     }
 }
 
-static void second_block(int lda, int M, int N, int K, double* A, double *B, double *C) {
-	for (int i=0; i < M; i += BLOCK_1_SIZE) {
-		int M_2 = min (BLOCK_1_SIZE, M-i);
-		for (int j=0; j < N; j += BLOCK_1_SIZE) {
-			int N_2 = min (BLOCK_1_SIZE, N-j);
-			double *c = C + i*lda + j;
-
-			for (int k=0; k < K; k += BLOCK_1_SIZE) {
-				double *a = A + i*lda + k;
-				double *b = B + k*lda + j;
-				int K_2 = min (BLOCK_1_SIZE, K-k);
-
-				do_block(lda, M_2, N_2, K_2, a, b, c);
-
-			}
-		}
-	}
-}
-
 /* This routine performs a dgemm operation
  *  C := C + A * B
  * where A, B, and C are lda-by-lda matrices stored in row-major order
  * On exit, A and B maintain their input values. */  
-void square_dgemm (int lda, double* A, double* B, double* C) {
-	for (int i = 0; i < lda; i += BLOCK_2_SIZE) {
-		int M = min (BLOCK_2_SIZE, lda - i);
-		for (int j = 0; j < lda; j += BLOCK_2_SIZE) {
-			int N = min (BLOCK_2_SIZE, lda - j);
-			double *c = C + i*lda + j;
-			for (int k = 0; k < lda; k += BLOCK_2_SIZE) {
-				double *a = A + i*lda + k;
-				double *b = B + k*lda + j;
-				int K = min (BLOCK_2_SIZE, lda - k);
-				
-				second_block(lda, M, N, K, a, b, c);
-			}
-		}
-	}
+void square_dgemm (int lda, double* A, double* B, double* C)
+{
+  /* For each block-row of A */ 
+  for (int i = 0; i < lda; i += BLOCK_SIZE)
+    /* For each block-column of B */
+    for (int j = 0; j < lda; j += BLOCK_SIZE)
+      /* Accumulate block dgemms into block of C */
+      for (int k = 0; k < lda; k += BLOCK_SIZE)
+      {
+	/* Correct block dimensions if block "goes off edge of" the matrix */
+	int M = min (BLOCK_SIZE, lda-i);
+	int N = min (BLOCK_SIZE, lda-j);
+	int K = min (BLOCK_SIZE, lda-k);
+
+	/* Perform individual block dgemm */
+	do_block(lda, M, N, K, A + i*lda + k, B + k*lda + j, C + i*lda + j);
+      }
+#ifdef TRANSPOSE
+  for (int i = 0; i < lda; ++i)
+    for (int j = i+1; j < lda; ++j) {
+        double t = B[i*lda+j];
+        B[i*lda+j] = B[j*lda+i];
+        B[j*lda+i] = t;
+  }
+#endif
 }
