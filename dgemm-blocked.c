@@ -5,6 +5,7 @@
  *    Enable user to select one problem size only via the -n option
  *    Support CBLAS interface
  */
+#include <emmintrin.h>
 
 const char* dgemm_desc = "Simple blocked dgemm.";
 
@@ -26,14 +27,24 @@ static void do_block (int lda, int M, int N, int K, double* A, double* B, double
     for (int j = 0; j < N; ++j) 
     {
       /* Compute C(i,j) */
-      double cij = C[i*lda+j];
-      for (int k = 0; k < K; ++k)
-#ifdef TRANSPOSE
-	cij += A[i*lda+k] * B[j*lda+k];
-#else
-	cij += A[i*lda+k] * B[k*lda+j];
-#endif
-      C[i*lda+j] = cij;
+      //double cij = C[i*lda+j];
+			bool odd = K%2==1;
+			if (odd) {
+				C[i*lda+j] = A[i*lda+(k-1)]*B[(k-1)*lda+j];
+				K = K-1;
+			}
+      __m128d cij = _mm_load_pd(C+i*lda+j);
+			__m128d sum = _mm_setzero_pd();
+			for (int k = 0; k < K; k+=2) {
+				__m128d a = _mm_load_pd(A+i*lda+k);
+				__m128d b = _mm_load_pd(B+k*lda+j);
+				__m128d mul  = _mm_mul_pd(a,b);
+				sum  = _mm_add_pd(sum, mul);
+				//cij += A[i*lda+k] * B[k*lda+j];
+			}
+			cij = _mm_add_pd(cij, sum);
+			_mm_storeu_pd(C+i*lda+j, cij);
+			//C[i*lda+j] = cij;
     }
 }
 
