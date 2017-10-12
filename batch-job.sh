@@ -55,9 +55,9 @@ echo
 echo ">>> Job Starts"
 date
 
-./benchmark-blas
+# ./benchmark-blas
 ./benchmark-blocked
-./benchmark-naive
+# ./benchmark-naive
 
 date
 echo ">>> Job Ends"
