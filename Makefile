@@ -61,7 +61,7 @@ ifeq ($(NO_BLAS), 1)
     CFLAGS += -DNO_BLAS
 endif
 
-OPTIMIZATION = $(MY_OPT)
+OPTIMIZATION += $(MY_OPT)
 
 targets = benchmark-naive benchmark-blocked benchmark-blas
 objects = benchmark.o dgemm-naive.o dgemm-blocked.o dgemm-blas.o  
