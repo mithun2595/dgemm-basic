@@ -1,6 +1,9 @@
+import matplotlib
 import matplotlib.pylab as plt
 import collections
+import sys
 
+matplotlib.rcParams.update({'font.size': 5})
 for filename in sys.argv[1:]:
 	with open(filename) as f:
 	    content = f.readlines()
@@ -18,7 +21,8 @@ for filename in sys.argv[1:]:
 	matrix_size = list(map(int,matrix_size))
 	gflop_dict = dict(zip(matrix_size, gflops))
 	ordered_gflop = collections.OrderedDict(sorted(gflop_dict.items()))
-	plt.bar(range(len(ordered_gflop)), ordered_gflop.values(), align='center')
 	plt.xticks(range(len(ordered_gflop)), ordered_gflop.keys())
+	plt.plot(ordered_gflop.keys(), ordered_gflop.values(), label=str(sum(gflops)/len(gflops)))
+plt.legend(loc='upper left')
 plt.show()
 
