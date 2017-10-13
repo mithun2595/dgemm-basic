@@ -1,19 +1,22 @@
 import matplotlib
 import matplotlib.pylab as plt
 import collections
+import re
 import sys
 
 matplotlib.rcParams.update({'font.size': 5})
 for filename in sys.argv[1:]:
 	with open(filename) as f:
 	    content = f.readlines()
-	content = content[109:160]
 	content = [line.strip() for line in content]
+	regex_pattern = "(Size: )([0-9]*)(\t)(Gflop\/s: )([+-]?([0-9]*[.])?[0-9]+)"
+	compiled_pattern = re.compile(regex_pattern)
 	readings = []
 	for line in content:
-	    line = line.replace("Size: ","")
-	    line = line.replace("\tGflop/s: ",",")
-	    readings = readings + [line];
+		if(compiled_pattern.match(line)):
+			line = line.replace("Size: ","")
+			line = line.replace("\tGflop/s: ",",")
+			readings = readings + [line];
 	matrix_size, gflops = zip(*(s.split(",") for s in readings))
 	matrix_size = list(matrix_size)
 	gflops = list(gflops)
