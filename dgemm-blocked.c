@@ -21,31 +21,37 @@ const char* dgemm_desc = "Simple blocked dgemm.";
  * where C is M-by-N, A is M-by-K, and B is K-by-N. */
 static void do_block (int lda, int M, int N, int K, double* A, double* B, double* C)
 {
-  /* For each row i of A */
-  for (int i = 0; i < M; ++i)
-    /* For each column j of B */ 
-    for (int j = 0; j < N; ++j) 
-    {
-      /* Compute C(i,j) */
-      //double cij = C[i*lda+j];
-			bool odd = K%2==1;
-			if (odd) {
-				C[i*lda+j] = A[i*lda+(k-1)]*B[(k-1)*lda+j];
-				K = K-1;
-			}
-      __m128d cij = _mm_load_pd(C+i*lda+j);
-			__m128d sum = _mm_setzero_pd();
-			for (int k = 0; k < K; k+=2) {
-				__m128d a = _mm_load_pd(A+i*lda+k);
-				__m128d b = _mm_load_pd(B+k*lda+j);
-				__m128d mul  = _mm_mul_pd(a,b);
-				sum  = _mm_add_pd(sum, mul);
-				//cij += A[i*lda+k] * B[k*lda+j];
-			}
-			cij = _mm_add_pd(cij, sum);
-			_mm_storeu_pd(C+i*lda+j, cij);
-			//C[i*lda+j] = cij;
-    }
+	int Kmod4 = (K>>2) <<2;
+	double c_unroll1 = 0, c_unroll2 = 0, c_unroll3 = 0, c_unroll4 = 0;
+  	for (int i = 0; i < M; ++i) {
+    	int jstep = 0;
+    	for (int j = 0; j < N; ++j) {
+			double cij = C[jlda+i];
+			int kstep = 0;
+			if(Kmod4 == K) {
+	      		for (int k = 0; k < Kmod4; k+=4) {
+					c_unroll1 = A[kstep+i] * B[jstep+k];
+					c_unroll2 = A[kstep+i+(1*kstep)] * B[jstep+k+1];
+					c_unroll3 = A[kstep+i+(2*kstep)] * B[jstep+k+2];
+					c_unroll4 = A[kstep+i+(3*kstep)] * B[jstep+k+3];
+					cij += c_unroll1 + c_unroll2 + c_unroll3 + c_unroll4
+	      			kstep += kstep*4;
+	    		}
+				for(int k=Kmod4; k<K; k++) {
+					cij += A[i+kstep] * B[k*jstep];
+					kstep += lda;
+				}
+	        	C[jstep+i] = cij;
+	    		jstep += lda;
+    		}
+    		else {
+    			for(int k=0; k<K; ++k) {
+					cij += A[i+k*lda] * B[k+j*lda];
+	  			}
+	  			C[i+j*lda] = cij;
+    		}	
+  		}
+	}
 }
 
 static void second_block(int lda, int M, int N, int K, double* A, double *B, double *C) {
