@@ -107,7 +107,6 @@ _=/usr/bin/printenv
 >>> Job Starts
 Thu Oct 12 21:33:12 PDT 2017
 Description:	Simple blocked dgemm.
-
 Size: 511	Gflop/s: 0.265
 Size: 512	Gflop/s: 0.236
 Size: 513	Gflop/s: 0.252
