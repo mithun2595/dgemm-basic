@@ -21,36 +21,18 @@ const char* dgemm_desc = "Simple blocked dgemm.";
  * where C is M-by-N, A is M-by-K, and B is K-by-N. */
 static void do_block (int lda, int M, int N, int K, double* A, double* B, double* C)
 {
-	int Kmod4 = (K>>2) <<2;
-	double c_unroll1 = 0, c_unroll2 = 0, c_unroll3 = 0, c_unroll4 = 0;
-  	for (int i = 0; i < M; ++i) {
-    	int jstep = 0;
-    	for (int j = 0; j < N; ++j) {
-			double cij = C[jlda+i];
-			int kstep = 0;
-			if(Kmod4 == K) {
-	      		for (int k = 0; k < Kmod4; k+=4) {
-					c_unroll1 = A[kstep+i] * B[jstep+k];
-					c_unroll2 = A[kstep+i+(1*kstep)] * B[jstep+k+1];
-					c_unroll3 = A[kstep+i+(2*kstep)] * B[jstep+k+2];
-					c_unroll4 = A[kstep+i+(3*kstep)] * B[jstep+k+3];
-					cij += c_unroll1 + c_unroll2 + c_unroll3 + c_unroll4;
-	      			kstep += kstep*4;
-	    		}
-				for(int k=Kmod4; k<K; k++) {
-					cij += A[i+kstep] * B[k*jstep];
-					kstep += lda;
-				}
-	        	C[jstep+i] = cij;
-	    		jstep += lda;
-    		}
-    		else {
-    			for(int k=0; k<K; ++k) {
-					cij += A[i+k*lda] * B[k+j*lda];
-	  			}
-	  			C[i+j*lda] = cij;
-    		}	
-  		}
+	for(int i=0;i<M;++i) {
+
+		for(int j=0;j<N;++j) {
+
+			cij = C[i*lda+j];
+
+			for(int k=0;k<K;++k) {
+				cij += A[i*lda + k] * B[k*lda + j];
+			}
+			
+			C[i*lda+j] = cij;
+		}
 	}
 }
 
