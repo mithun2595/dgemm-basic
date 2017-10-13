@@ -34,7 +34,7 @@ static void do_block (int lda, int M, int N, int K, double* A, double* B, double
 					c_unroll2 = A[kstep+i+(1*kstep)] * B[jstep+k+1];
 					c_unroll3 = A[kstep+i+(2*kstep)] * B[jstep+k+2];
 					c_unroll4 = A[kstep+i+(3*kstep)] * B[jstep+k+3];
-					cij += c_unroll1 + c_unroll2 + c_unroll3 + c_unroll4
+					cij += c_unroll1 + c_unroll2 + c_unroll3 + c_unroll4;
 	      			kstep += kstep*4;
 	    		}
 				for(int k=Kmod4; k<K; k++) {
