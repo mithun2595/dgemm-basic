@@ -16,12 +16,14 @@ const char* dgemm_desc = "Simple blocked dgemm.";
 
 #define min(a,b) (((a)<(b))?(a):(b))
 
-static void do_transpose(double* B, int lda) {
-	for (int i=0; i < lda; i++) {
-		for (int j= i+1; j < lda; j++) {
-			double t = B[i*lda+j];
+static void do_transpose(double* B, int lda, int K, int N, double* T) {
+	for (int i=0; i < K; i++) {
+		for (int j= 0; j < N; j++) {
+		/*	double t = B[i*lda+j];
 			B[i*lda+j] = B[j*lda+i];
 			B[j*lda+i] = t;
+		*/
+			T[j*K+i] = B[i*lda+j];
 		}	
 	}
 }
@@ -31,7 +33,8 @@ static void do_transpose(double* B, int lda) {
  * where C is M-by-N, A is M-by-K, and B is K-by-N. */
 static void do_block (int lda, int M, int N, int K, double* A, double* B, double* C)
 {
-	do_transpose(B);
+	double* T = malloc(K*N*sizeof(double));
+	do_transpose(B, lda, K, N, T);
 	double cij = 0;
 	for(int i=0;i<M;++i) {
 
@@ -40,13 +43,13 @@ static void do_block (int lda, int M, int N, int K, double* A, double* B, double
 			cij = C[i*lda+j];
 
 			for(int k=0;k<K;++k) {
-				cij += A[i*lda + k] * B[j*lda + k];
+				cij += A[i*lda + k] * T[K*j + k];
 			}
 
 			C[i*lda+j] = cij;
 		}
 	}
-	do_transpose(B);
+	free(T);
 }
 
 static void second_block(int lda, int M, int N, int K, double* A, double *B, double *C) {
