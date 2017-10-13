@@ -21,6 +21,7 @@ const char* dgemm_desc = "Simple blocked dgemm.";
  * where C is M-by-N, A is M-by-K, and B is K-by-N. */
 static void do_block (int lda, int M, int N, int K, double* A, double* B, double* C)
 {
+	int cij = 0;
 	for(int i=0;i<M;++i) {
 
 		for(int j=0;j<N;++j) {
@@ -30,7 +31,7 @@ static void do_block (int lda, int M, int N, int K, double* A, double* B, double
 			for(int k=0;k<K;++k) {
 				cij += A[i*lda + k] * B[k*lda + j];
 			}
-			
+
 			C[i*lda+j] = cij;
 		}
 	}
