@@ -10,8 +10,8 @@
 const char* dgemm_desc = "Simple blocked dgemm.";
 
 #if !defined(BLOCK_SIZE)
-#define BLOCK_2_SIZE 256
-#define BLOCK_1_SIZE 32
+#define BLOCK_2_SIZE 128
+#define BLOCK_1_SIZE 16
 #endif
 
 #define min(a,b) (((a)<(b))?(a):(b))
@@ -36,19 +36,35 @@ static void do_block (int lda, int M, int N, int K, double* A, double* B, double
 	double* T = malloc(K*N*sizeof(double));
 	do_transpose(B, lda, K, N, T);
 	double cij = 0;
+	double* s = malloc(2*sizeof(double)); 
+	
 	for(int i=0;i<M;++i) {
 
 		for(int j=0;j<N;++j) {
-
+			int K_iter = K;
 			cij = C[i*lda+j];
-
-			for(int k=0;k<K;++k) {
-				cij += A[i*lda + k] * T[K*j + k];
+			if (K%2 == 1) {
+				cij += A[i*lda+K-1] * T[K*j + K-1];			
+				K_iter = K-1;
 			}
-
-			C[i*lda+j] = cij;
+			register __m128d c = _mm_setzero_pd();
+			register __m128d sum = _mm_setzero_pd();
+			register __m128d a;
+			register __m128d b;
+			for(int k=0;k<K_iter;k += 2) {
+				a = _mm_loadu_pd(&A[i*lda+k]);
+				b = _mm_loadu_pd(&T[K*j+k]);
+				c = _mm_mul_pd(a,b);
+				sum = _mm_add_pd(sum, c);
+				//cij += A[i*lda + k] * T[K*j + k];
+			}
+			_mm_storeu_pd(s, sum);
+			C[i*lda+j] = cij + s[0] + s[1];
+			
+		//	C[i*lda+j] = cij;
 		}
 	}
+	free(s);
 	free(T);
 }
 
