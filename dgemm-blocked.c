@@ -34,7 +34,7 @@ static void do_copy(double* A, int lda, int M, int K, double* T) {
 	int K_ind = (K%2==1) ? K+1 : K;
 	for (int i=0; i < M; i++) {
 		for (int j= 0; j < K; j++) {
-			T[i*K_ind+j] = B[i*lda+j];
+			T[i*K_ind+j] = A[i*lda+j];
 		}	
 	}
 }
@@ -122,7 +122,7 @@ static void do_block (int lda, int M, int N, int K, double* A, double* B, double
 			register __m128d a_1, a_2;
 			register __m128d b_1, b_2;
 			for(int k=0;k<K_iter;k += 2) {
-				a_1 = _mm_loadu_pd(&A[i*K+k]);
+				a_1 = _mm_load_pd(&A[i*K+k]);
 				b_1 = _mm_load_pd(&T[K*j+k]);
 				
 				if (i+1 >= M && j+1 >= N) {
@@ -132,10 +132,10 @@ static void do_block (int lda, int M, int N, int K, double* A, double* B, double
 					b_2 = _mm_load_pd(&T[K*(j+1)+k]);
 					a_2 = _mm_setzero_pd();
 				} else if (j+1 >= N) {
-					a_2 = _mm_loadu_pd(&A[(i+1)*K+k]);
+					a_2 = _mm_load_pd(&A[(i+1)*K+k]);
 					b_2 = _mm_setzero_pd();
 				} else {
-					a_2 = _mm_loadu_pd(&A[(i+1)*K+k]);
+					a_2 = _mm_load_pd(&A[(i+1)*K+k]);
 					b_2 = _mm_load_pd(&T[K*(j+1)+k]);
 				}
 				sum_1 = _mm_add_pd(sum_1, _mm_mul_pd(a_1,b_1));
@@ -201,9 +201,9 @@ static void second_block(int lda, int M, int N, int K, double* A, double *B, dou
 					printf("ERROR ON USING POSIX_MEMALIGN \n");
 					return;	
 				}			
-				do_copy(A, lda, M_2, K_2, T_A);
+				do_copy(a, lda, M_2, K_2, T_A);
 				do_block(lda, M_2, N_2, K_2, T_A, b, c, T_B);
-				free(T);
+				free(T_B);
 				free(T_A);
 			}
 		}
