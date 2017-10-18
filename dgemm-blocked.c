@@ -144,7 +144,7 @@ static void do_block (int lda, int M, int N, int K, double* A, double* B, double
 				sum_4 = _mm_add_pd(sum_4, _mm_mul_pd(a_2,b_2));
 				//cij += A[i*lda + k] * T[K*j + k];
 			}
-5
+
 			_mm_store_pd(s_i1j1, sum_1);
 			_mm_store_pd(s_i1j2, sum_2);
 			_mm_store_pd(s_i2j1, sum_3);
