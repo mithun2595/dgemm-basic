@@ -13,7 +13,7 @@ gcc version 4.4.7 20120313 (Red Hat 4.4.7-4) (GCC)
 SET_HOST_TYPE= -x 
 PDSHROOT=/opt/pdsh
 MANPATH=/opt/openmpi/share/man:/usr/share/man:/opt/gridengine/man:/share/apps/opt/gcc-4.8.4/share/man:/opt/openmpi/share/man:/usr/share/man/en:/usr/share/man:/opt/gridengine/man:/usr/local/share/man:/opt/rocks/man:/usr/java/latest/man:/opt/ganglia/man:/opt/sun-ct/man
-HOSTNAME=compute-0-2.local
+HOSTNAME=compute-0-24.local
 SGE_TASK_STEPSIZE=undefined
 SGE_INFOTEXT_MAX_COLUMN=5000
 SHELL=/bin/bash
@@ -22,8 +22,8 @@ NHOSTS=1
 HISTSIZE=1000
 ECLIPSE_HOME=/opt/eclipse
 SGE_O_WORKDIR=/home/degupta/pa1-dewal-mithun
-TMPDIR=/tmp/28142.1.debug.q
-SSH_CLIENT=137.110.77.58 52986 22
+TMPDIR=/tmp/35476.1.debug.q
+SSH_CLIENT=137.110.54.200 55687 22
 SGE_O_HOME=/home/degupta
 SGE_ARCH=linux-x64
 SGE_CELL=default
@@ -32,7 +32,7 @@ OLDPWD=/home/degupta/pa1-dewal-mithun
 QTDIR=/usr/lib64/qt-3.3
 QTINC=/usr/lib64/qt-3.3/include
 RESTARTED=0
-SSH_TTY=/dev/pts/2
+SSH_TTY=/dev/pts/31
 ANT_HOME=/opt/rocks
 ARC=linux-x64
 USER=degupta
@@ -44,19 +44,19 @@ ROCKS_ROOT=/opt/rocks
 SGE_TASK_ID=undefined
 SGE_BINARY_PATH=/opt/gridengine/bin/linux-x64
 MAIL=/var/spool/mail/degupta
-PATH=/usr/bin/:/tmp/28142.1.debug.q:/share/apps/opt/gcc-4.8.4/bin:/usr/bin/:/opt/openmpi/bin:/usr/lib64/qt-3.3/bin:/usr/local/bin:/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/sbin:/opt/eclipse:/opt/ganglia/bin:/opt/ganglia/sbin:/usr/java/latest/bin:/opt/pdsh/bin:/opt/rocks/bin:/opt/rocks/sbin:/opt/gridengine/bin/linux-x64:/share/apps/bin:/share/apps/sbin:/home/degupta/bin:/share/class/public/cse260-fa17/Profiles:/home/degupta/bin:/share/class/public/cse260-fa17/Profiles
+PATH=/usr/bin/:/tmp/35476.1.debug.q:/share/apps/opt/gcc-4.8.4/bin:/usr/bin/:/opt/openmpi/bin:/usr/lib64/qt-3.3/bin:/usr/local/bin:/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/sbin:/opt/eclipse:/opt/ganglia/bin:/opt/ganglia/sbin:/usr/java/latest/bin:/opt/pdsh/bin:/opt/rocks/bin:/opt/rocks/sbin:/opt/gridengine/bin/linux-x64:/share/apps/bin:/share/apps/sbin:/home/degupta/bin:/share/class/public/cse260-fa17/Profiles:/home/degupta/bin:/share/class/public/cse260-fa17/Profiles
 RUNLEVEL=5
-SGE_STDERR_PATH=/home/degupta/pa1-dewal-mithun/DGEMM.o28142
+SGE_STDERR_PATH=/home/degupta/pa1-dewal-mithun/DGEMM.o35476
 PWD=/home/degupta/pa1-dewal-mithun
 JOB=rc
 JAVA_HOME=/usr/java/latest
 _LMFILES_=/usr/share/Modules/modulefiles/rocks-openmpi:/usr/share/Modules/modulefiles/rocks-openmpi_openib:/etc/modulefiles/gcc-4.8.4
-SGE_STDOUT_PATH=/home/degupta/pa1-dewal-mithun/DGEMM.o28142
+SGE_STDOUT_PATH=/home/degupta/pa1-dewal-mithun/DGEMM.o35476
 SGE_ACCOUNT=sge
 SGE_EXECD_PORT=537
 RESULT=ok
 LANG=en_US.iso885915
-JOB_SCRIPT=/opt/gridengine/default/spool/compute-0-2/job_scripts/28142
+JOB_SCRIPT=/opt/gridengine/default/spool/compute-0-24/job_scripts/35476
 JOB_NAME=DGEMM
 MODULEPATH=/usr/share/Modules/modulefiles:/etc/modulefiles
 SGE_QMASTER_PORT=536
@@ -64,9 +64,9 @@ LOADEDMODULES=rocks-openmpi:rocks-openmpi_openib:gcc-4.8.4
 SGE_NOMSG=1
 SGE_ROOT=/opt/gridengine
 REQNAME=DGEMM
-SGE_JOB_SPOOL_DIR=/opt/gridengine/default/spool/compute-0-2/active_jobs/28142.1
+SGE_JOB_SPOOL_DIR=/opt/gridengine/default/spool/compute-0-24/active_jobs/35476.1
 ENVIRONMENT=BATCH
-KRB5CCNAME=FILE:/tmp/krb5cc_3011_7lLJuo
+KRB5CCNAME=FILE:/tmp/krb5cc_3011_HIu8hX
 HISTCONTROL=ignoredups
 SSH_ASKPASS=/usr/libexec/openssh/gnome-ssh-askpass
 HOME=/home/degupta
@@ -77,13 +77,13 @@ SGE_O_LOGNAME=degupta
 SGE_O_MAIL=/var/spool/mail/degupta
 MPIHOME=/opt/openmpi
 UPSTART_INSTANCE=
-TMP=/tmp/28142.1.debug.q
-JOB_ID=28142
+TMP=/tmp/35476.1.debug.q
+JOB_ID=35476
 LOGNAME=degupta
 UPSTART_EVENTS=stopping
 CVS_RSH=ssh
 QTLIB=/usr/lib64/qt-3.3/lib
-SSH_CONNECTION=137.110.77.58 52986 132.239.145.212 22
+SSH_CONNECTION=137.110.54.200 55687 132.239.145.212 22
 SGE_TASK_FIRST=undefined
 MODULESHOME=/usr/share/Modules
 LESSOPEN=|/usr/bin/lesspipe.sh %s
@@ -105,59 +105,59 @@ BASH_FUNC_module()=() {  eval `/usr/bin/modulecmd bash $*`
 _=/usr/bin/printenv
 
 >>> Job Starts
-Fri Oct 13 13:23:33 PDT 2017
+Wed Oct 18 16:03:21 PDT 2017
 Description:	Simple blocked dgemm.
 
-Size: 511	Gflop/s: 1.23
-Size: 512	Gflop/s: 0.812
-Size: 513	Gflop/s: 1.2
-Size: 543	Gflop/s: 1.33
-Size: 544	Gflop/s: 1.32
-Size: 545	Gflop/s: 1.32
-Size: 575	Gflop/s: 1.32
-Size: 576	Gflop/s: 1.3
-Size: 577	Gflop/s: 1.32
-Size: 607	Gflop/s: 1.32
-Size: 608	Gflop/s: 1.32
-Size: 609	Gflop/s: 1.32
-Size: 639	Gflop/s: 1.24
-Size: 640	Gflop/s: 1.19
-Size: 641	Gflop/s: 1.28
-Size: 671	Gflop/s: 1.32
-Size: 672	Gflop/s: 1.32
-Size: 673	Gflop/s: 1.32
-Size: 703	Gflop/s: 1.32
-Size: 704	Gflop/s: 1.3
-Size: 705	Gflop/s: 1.32
-Size: 735	Gflop/s: 1.32
-Size: 736	Gflop/s: 1.32
-Size: 737	Gflop/s: 1.32
-Size: 767	Gflop/s: 1.25
-Size: 768	Gflop/s: 0.846
-Size: 769	Gflop/s: 1.23
-Size: 799	Gflop/s: 1.32
-Size: 800	Gflop/s: 1.32
-Size: 801	Gflop/s: 1.32
-Size: 831	Gflop/s: 1.32
-Size: 832	Gflop/s: 1.3
-Size: 833	Gflop/s: 1.32
-Size: 863	Gflop/s: 1.32
-Size: 864	Gflop/s: 1.32
-Size: 865	Gflop/s: 1.32
-Size: 895	Gflop/s: 1.24
-Size: 896	Gflop/s: 1.19
-Size: 897	Gflop/s: 1.28
-Size: 927	Gflop/s: 1.32
-Size: 928	Gflop/s: 1.32
-Size: 929	Gflop/s: 1.32
-Size: 959	Gflop/s: 1.32
-Size: 960	Gflop/s: 1.3
-Size: 961	Gflop/s: 1.32
-Size: 991	Gflop/s: 1.32
-Size: 992	Gflop/s: 1.32
-Size: 993	Gflop/s: 1.31
-Size: 1023	Gflop/s: 1.22
-Size: 1024	Gflop/s: 0.802
-Size: 1025	Gflop/s: 1.2
-Fri Oct 13 13:25:54 PDT 2017
+Size: 511	Gflop/s: 4.12
+Size: 512	Gflop/s: 4.09
+Size: 513	Gflop/s: 4.07
+Size: 543	Gflop/s: 4.11
+Size: 544	Gflop/s: 4.13
+Size: 545	Gflop/s: 4
+Size: 575	Gflop/s: 4.11
+Size: 576	Gflop/s: 4.12
+Size: 577	Gflop/s: 4.11
+Size: 607	Gflop/s: 3.96
+Size: 608	Gflop/s: 3.98
+Size: 609	Gflop/s: 3.99
+Size: 639	Gflop/s: 4
+Size: 640	Gflop/s: 4.03
+Size: 641	Gflop/s: 4.01
+Size: 671	Gflop/s: 4.07
+Size: 672	Gflop/s: 4.09
+Size: 673	Gflop/s: 3.98
+Size: 703	Gflop/s: 4.07
+Size: 704	Gflop/s: 4.09
+Size: 705	Gflop/s: 4.06
+Size: 735	Gflop/s: 3.9
+Size: 736	Gflop/s: 4.08
+Size: 737	Gflop/s: 4.07
+Size: 767	Gflop/s: 4.11
+Size: 768	Gflop/s: 4.13
+Size: 769	Gflop/s: 4.12
+Size: 799	Gflop/s: 4.04
+Size: 800	Gflop/s: 4.04
+Size: 801	Gflop/s: 3.95
+Size: 831	Gflop/s: 4.03
+Size: 832	Gflop/s: 4.05
+Size: 833	Gflop/s: 4.03
+Size: 863	Gflop/s: 4
+Size: 864	Gflop/s: 4.01
+Size: 865	Gflop/s: 4.04
+Size: 895	Gflop/s: 4.05
+Size: 896	Gflop/s: 4.08
+Size: 897	Gflop/s: 4.07
+Size: 927	Gflop/s: 4.03
+Size: 928	Gflop/s: 4.03
+Size: 929	Gflop/s: 4.05
+Size: 959	Gflop/s: 4.03
+Size: 960	Gflop/s: 4.05
+Size: 961	Gflop/s: 4.05
+Size: 991	Gflop/s: 4.02
+Size: 992	Gflop/s: 3.97
+Size: 993	Gflop/s: 3.98
+Size: 1023	Gflop/s: 4.14
+Size: 1024	Gflop/s: 3.97
+Size: 1025	Gflop/s: 4.06
+Wed Oct 18 16:04:17 PDT 2017
 >>> Job Ends
