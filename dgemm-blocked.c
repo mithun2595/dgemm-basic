@@ -30,6 +30,15 @@ static void do_transpose(double* B, int lda, int K, int N, double* T) {
 	}
 }
 
+static void do_copy(double* A, int lda, int M, int K, double* T) {
+	int K_ind = (K%2==1) ? K+1 : K;
+	for (int i=0; i < M; i++) {
+		for (int j= 0; j < K; j++) {
+			T[i*K_ind+j] = A[i*lda+j];
+		}	
+	}
+}
+
 /* This auxiliary subroutine performs a smaller dgemm operation
  *  C := C + A * B
  * where C is M-by-N, A is M-by-K, and B is K-by-N. */
@@ -90,18 +99,18 @@ static void do_block (int lda, int M, int N, int K, double* A, double* B, double
 			}	
 
 			if (K_ind%2 == 1) {
-				ci1j1 += A[i*lda+K_ind-1] * T[K*j + K_ind-1];
+				ci1j1 += A[i*K+K_ind-1] * T[K*j + K_ind-1];
 				
 				if (j+1 >= N && i+1 >= M) {
 					//do nothing	
 				} else if (i+1 >= M) {
-					ci1j2 += A[i*lda+K_ind-1] * T[K*(j+1) + K_ind-1];
+					ci1j2 += A[i*K+K_ind-1] * T[K*(j+1) + K_ind-1];
 				} else if (j+1 >= N) {
-					ci2j1 += A[(i+1)*lda+K_ind-1] * T[K*j+K_ind-1];
+					ci2j1 += A[(i+1)*K+K_ind-1] * T[K*j+K_ind-1];
 				} else {
-					ci1j2 += A[i*lda+K_ind-1] * T[K*(j+1) + K_ind-1];
-					ci2j1 += A[(i+1)*lda+K_ind-1] * T[K*j+K_ind-1];
-					ci2j2 += A[(i+1)*lda+K_ind-1] * T[K*(j+1)+K_ind-1];
+					ci1j2 += A[i*K+K_ind-1] * T[K*(j+1) + K_ind-1];
+					ci2j1 += A[(i+1)*K+K_ind-1] * T[K*j+K_ind-1];
+					ci2j2 += A[(i+1)*K+K_ind-1] * T[K*(j+1)+K_ind-1];
 				}			
 				K_iter = K_ind-1;
 			}
@@ -113,7 +122,7 @@ static void do_block (int lda, int M, int N, int K, double* A, double* B, double
 			register __m128d a_1, a_2;
 			register __m128d b_1, b_2;
 			for(int k=0;k<K_iter;k += 2) {
-				a_1 = _mm_loadu_pd(&A[i*lda+k]);
+				a_1 = _mm_load_pd(&A[i*K+k]);
 				b_1 = _mm_load_pd(&T[K*j+k]);
 				
 				if (i+1 >= M && j+1 >= N) {
@@ -123,10 +132,10 @@ static void do_block (int lda, int M, int N, int K, double* A, double* B, double
 					b_2 = _mm_load_pd(&T[K*(j+1)+k]);
 					a_2 = _mm_setzero_pd();
 				} else if (j+1 >= N) {
-					a_2 = _mm_loadu_pd(&A[(i+1)*lda+k]);
+					a_2 = _mm_load_pd(&A[(i+1)*K+k]);
 					b_2 = _mm_setzero_pd();
 				} else {
-					a_2 = _mm_loadu_pd(&A[(i+1)*lda+k]);
+					a_2 = _mm_load_pd(&A[(i+1)*K+k]);
 					b_2 = _mm_load_pd(&T[K*(j+1)+k]);
 				}
 				sum_1 = _mm_add_pd(sum_1, _mm_mul_pd(a_1,b_1));
@@ -180,14 +189,22 @@ static void second_block(int lda, int M, int N, int K, double* A, double *B, dou
 					K_mem = K_2 + 1;
 				}
 
-				double* T = NULL;
+				double* T_B = NULL;
+				double* T_A = NULL;
 			
-				if (posix_memalign(&T, 16, K_mem*N*sizeof(double))) {
+				if (posix_memalign(&T_B, 16, K_mem*N*sizeof(double))) {
+					printf("ERROR ON USING POSIX_MEMALIGN \n");
+					return;	
+				}
+
+				if (posix_memalign(&T_A, 16, K_mem*M*sizeof(double))) {
 					printf("ERROR ON USING POSIX_MEMALIGN \n");
 					return;	
 				}			
-				do_block(lda, M_2, N_2, K_2, a, b, c, T);
-				free(T);
+				do_copy(a, lda, M_2, K_2, T_A);
+				do_block(lda, M_2, N_2, K_2, T_A, b, c, T_B);
+				free(T_B);
+				free(T_A);
 			}
 		}
 	}
