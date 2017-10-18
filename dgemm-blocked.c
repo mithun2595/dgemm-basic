@@ -7,6 +7,7 @@
  */
 #include <emmintrin.h>
 #include <stdlib.h>
+#include <stdbool.h>
 
 const char* dgemm_desc = "Simple blocked dgemm.";
 
@@ -18,7 +19,8 @@ const char* dgemm_desc = "Simple blocked dgemm.";
 #define min(a,b) (((a)<(b))?(a):(b))
 
 static void do_transpose(double* B, int lda, int K, int N, double* T) {
-	int K_ind = (K%2==1) ? K+1 : K;
+	bool odd = K%2 == 1;
+	int K_ind = (odd) ? K+1 : K;
 	for (int i=0; i < K; i++) {
 		for (int j= 0; j < N; j++) {
 		/*	double t = B[i*lda+j];
@@ -28,11 +30,19 @@ static void do_transpose(double* B, int lda, int K, int N, double* T) {
 			T[j*K_ind+i] = B[i*lda+j];
 		}	
 	}
+	if (odd) {
+		for (int i=0; i < N; i++) {
+			T[i*K_ind+K_ind] = 0;
+		}
+	}
 }
 
 static void do_copy(double* A, int lda, int M, int K, double* T) {
-	int K_ind = (K%2==1) ? K+1 : K;
+	bool odd = K%2 == 1;
+	int K_ind = (odd) ? K+1 : K;
 	for (int i=0; i < M; i++) {
+		if (odd)	
+			T[i*K_ind+K_ind] = 0;
 		for (int j= 0; j < K; j++) {
 			T[i*K_ind+j] = A[i*lda+j];
 		}	
@@ -97,7 +107,7 @@ static void do_block (int lda, int M, int N, int K, double* A, double* B, double
 				ci2j1 = C[(i+1)*lda+j];
 				ci2j2 = C[(i+1)*lda+j+1];
 			}	
-
+/*
 			if (K_ind%2 == 1) {
 				ci1j1 += A[i*K+K_ind-1] * T[K*j + K_ind-1];
 				
@@ -114,14 +124,14 @@ static void do_block (int lda, int M, int N, int K, double* A, double* B, double
 				}			
 				K_iter = K_ind-1;
 			}
-
+*/
 			register __m128d sum_1 = _mm_setzero_pd();
 			register __m128d sum_2 = _mm_setzero_pd();
 			register __m128d sum_3 = _mm_setzero_pd();
 			register __m128d sum_4 = _mm_setzero_pd();
 			register __m128d a_1, a_2;
 			register __m128d b_1, b_2;
-			for(int k=0;k<K_iter;k += 2) {
+			for(int k=0; k<K; k += 2) {
 				a_1 = _mm_load_pd(&A[i*K+k]);
 				b_1 = _mm_load_pd(&T[K*j+k]);
 				
