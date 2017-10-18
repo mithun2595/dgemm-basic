@@ -21,6 +21,7 @@ const char* dgemm_desc = "Simple blocked dgemm.";
 static void do_transpose(double* B, int lda, int K, int N, double* T) {
 	bool odd = K%2 == 1;
 	int K_ind = (odd) ? K+1 : K;
+
 	for (int i=0; i < K; i++) {
 		for (int j= 0; j < N; j++) {
 		/*	double t = B[i*lda+j];
@@ -32,7 +33,7 @@ static void do_transpose(double* B, int lda, int K, int N, double* T) {
 	}
 	if (odd) {
 		for (int i=0; i < N; i++) {
-			T[i*K_ind+K_ind] = 0;
+			T[i*K_ind+K_ind-1] = 0;
 		}
 	}
 }
@@ -42,7 +43,7 @@ static void do_copy(double* A, int lda, int M, int K, double* T) {
 	int K_ind = (odd) ? K+1 : K;
 	for (int i=0; i < M; i++) {
 		if (odd)	
-			T[i*K_ind+K_ind] = 0;
+			T[i*K_ind+K_ind-1] = 0;
 		for (int j= 0; j < K; j++) {
 			T[i*K_ind+j] = A[i*lda+j];
 		}	
@@ -67,8 +68,9 @@ static void do_block (int lda, int M, int N, int K, double* A, double* B, double
 	if (K%2==1) {
 		K = K+1;
 	}
-	
+
 	do_transpose(B, lda, K_ind, N, T);
+
 	double ci1j1 = 0; 
 	double ci2j1 = 0;
 	double ci1j2 = 0;
@@ -226,7 +228,6 @@ static void second_block(int lda, int M, int N, int K, double* A, double *B, dou
  * On exit, A and B maintain their input values. */  
 void square_dgemm (int lda, double* A, double* B, double* C) {
 	
-
 	for (int i = 0; i < lda; i += BLOCK_2_SIZE) {
 		int M = min (BLOCK_2_SIZE, lda - i);
 		for (int j = 0; j < lda; j += BLOCK_2_SIZE) {
