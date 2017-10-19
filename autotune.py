@@ -1,6 +1,7 @@
 import os
 import subprocess
 import re
+import time
 
 def update(b1, b2):
     lines = []
@@ -23,12 +24,24 @@ def make():
 
 def run():
     proc = subprocess.Popen("qsub batch-job.sh", shell=True, stdout=subprocess.PIPE).stdout.read()
-    procnum = re.findall(r"\D(\d{5})\D", proc)    
+    procnum = re.findall(r"\d{5}", proc)    
     pid = procnum[0]
+    print(pid)
     return pid
 
 def extract(pid, param):
-    
+    fname = "DGEMM.o"+str(pid) 
+    print(fname)
+    while not os.path.isfile(fname): 
+        print("waiting...")
+        time.sleep(5) 
+
+    out = subprocess.Popen("qstat", shell=True, stdout=subprocess.PIPE).stdout.read()
+    while out not in ["\n", '', ' ']:
+        print("still waiting...")
+        time.sleep(5)
+        out = subprocess.Popen("qstat", shell=True, stdout=subprocess.PIPE).stdout.read()
+
     with open(fname) as f:
         content = f.readlines()
 
@@ -40,30 +53,41 @@ def extract(pid, param):
         if(compiled_pattern.match(line)):
             line = line.replace("Size: ","")
             line = line.replace("\tGflop/s: ",",")
-            readings = readings + [line];
+            readings = readings + [line]
+    # print(readings)
     matrix_size, gflops = zip(*(s.split(",") for s in readings))
+
     matrix_size = list(matrix_size)
     gflops = list(gflops)
     gflops = list(map(float,gflops))
     matrix_size = list(map(int,matrix_size))
     gflop_dict = dict(zip(matrix_size, gflops))
     avg = 0
-    count = 0
+    count = 1
     for key, val in gflop_dict.items():
        count = count+1
        avg += val
-    speed1024 = gflop_dict['1024']
+    speed1024 = gflop_dict[1024]
     avg = avg/count
     return (param, avg, speed1024)
 
 b1 = 36
 speed = []
-
-for b2 in range(100, 410, 10):
+for b2 in range(300, 610, 50):
     update(b1, b2)
     make()
     name = run()
-    speed.append(extract(name))
-    break
+    tup = extract(name, b2)
+    print(tup)
+    speed.append(tup)
+#    break
 
+print("**********************  FINAL RESULTS : ")
 print(speed)
+
+'''
+speed.append(extract('35546', 100))
+print (speed)
+'''
+
+
