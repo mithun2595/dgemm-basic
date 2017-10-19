@@ -13,30 +13,53 @@ If you worked alone leave column B blank
 
 (1) List the names of your team members:
 
-A:
+A: Dewal Gupta
 
  
-B:
+B: Mithun Dharmaraj
 
  
  
 (2) Estimate how much time each team member devoted to this project, in HOURS.
 
   	                        A 	       B
-meetings 	  	  	 
-coding 	  	  	 
-writeup 	  	  	 
-planning (alone) 	  	  	 
-total (including meetings) 	  	  	 
+meetings 	  	 	24		24	  	 
+coding 	  	  	 	20		20 *(overlapped w/ meeting hours)
+writeup 	  	  	5 		5
+planning (alone) 	  	5		5  	 
+total (including meetings) 	35  	  	35 
 
 
 (3) Discuss the following.
 (a) If you worked in a team, what were the major responsibilities
     of each team member?
-(b) Did you complete the assignment?
+	Dewal and Mithun shared most of the responbilities by doing pair programming.
+ 	That way we would switch who was doing the coding and who was in the "passenger-seat".
+ 	The brain-storming, writing, and all critical thinking was done as a pair, and never
+was one person alone responsible for a significant portion of this project. 
+(b) Did you complete the assignment? Yes.
 (c) What were your major strengths and weaknesses in doing this
-    assignment (individually or in a team)?
+    assignment (individually or in a team)? 
     If in a team, also discuss how your team worked together.
+
+	Mithun was very capable when it came to the matrix multiplication, since Dewal 
+tended to get confused from time to time. However, Dewal was a better C coder, and was able
+to be more efficient in the coding realm, helping Mithun when it was his turn. Because of 
+our complement strenghts (and weaknesses) we made a very good team and were able to complete
+this assignment.
+
 (d) What  lessons did you learn from these events.
+	It is important to recognize where one's strengths lie and be confident about voicing
+concerns or ideas when it comes to such areas. For example, when implementing the second level
+blocking, Mithun was very helpful in teaching Dewal the theoretical implications of tiling and how
+it could be best implemented. On the other hand, Dewal was able to share advice and show Mithun at
+times at how the code could be improved.
+
 (e) What suggestions do you have to improve this assignment?
+	This was a fun assignment with a very practical focus, and we both enjoyed learning from
+this exercise. The AWS was unnecessary for this assignment as we mainly used Bang, and were unsure
+of the role AWS was supposed to play. Maybe some more code examples on using instrinsics and loop
+unrolling could have been helpful and might have saved us time when it came to actually implementing
+it. Other than that, the assignment was well written and educational.
 (f) Anything else that comes to mind.
+	n/a
